@@ -1,6 +1,6 @@
 {
   "name": "vk-io-redis-storage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "RedisStorage add-on for Session vk-io library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,8 +24,8 @@
     "redis session"
   ],
   "dependencies": {
-    "@vk-io/session": "^2.1.0",
     "@types/ioredis": "4.28.8",
+    "@vk-io/session": "^2.1.0",
     "ioredis": "4.28.5"
   },
   "devDependencies": {
