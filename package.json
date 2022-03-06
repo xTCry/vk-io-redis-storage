@@ -1,0 +1,42 @@
+{
+  "name": "vk-io-redis-storage",
+  "version": "1.0.0",
+  "description": "RedisStorage add-on for Session vk-io library",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "xTCry [Vladislav Kh] (https://github.com/xTCry/)",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "prepack": "npm run build",
+    "publish:npm": "npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xTCry/vk-io-redis-storage.git"
+  },
+  "homepage": "https://github.com/xTCry/vk-io-redis-storage#readme",
+  "keywords": [
+    "redis",
+    "vk-io",
+    "vk-io redis",
+    "vk-io storage",
+    "redis session"
+  ],
+  "dependencies": {
+    "@vk-io/session": "^2.1.0",
+    "ioredis": "4.28.5"
+  },
+  "devDependencies": {
+    "@sindresorhus/tsconfig": "sindresorhus/tsconfig",
+    "@types/ioredis": "4.28.8",
+    "@types/node": "^17.0.21",
+    "typescript": "^4.6.2"
+  },
+  "peerDependencies": {
+    "@vk-io/session": "^2.0.0"
+  },
+  "files": [
+    "dist/**/*"
+  ]
+}
