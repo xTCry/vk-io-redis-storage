@@ -4,7 +4,7 @@
 [![NPM downloads][npm-downloads]][npm-url]
 <!-- [![Build Status][build]][build-url] -->
 
-RedisStorage - Simple add-on for Session [Session](https://github.com/negezor/vk-io/tree/master/packages/session) [vk-io](https://github.com/negezor/vk-io) library
+RedisStorage - Simple add-on for [Session](https://github.com/negezor/vk-io/tree/master/packages/session) [vk-io](https://github.com/negezor/vk-io) library
 
 > Powered by [ioredis](https://github.com/luin/ioredis)
 
@@ -59,11 +59,11 @@ function startBot({ updates }) {
 startBot(vk);
 ```
 
-[npm-v]: https://img.shields.io/npm/v/@vk-io-redis-storage.svg?style=flat-square
-[npm-downloads]: https://img.shields.io/npm/dt/@vk-io-redis-storage?label=used%20by&style=flat-square
-[npm-url]: https://www.npmjs.com/package/@vk-io-redis-storage
+[npm-v]: https://img.shields.io/npm/v/vk-io-redis-storage.svg?style=flat-square
+[npm-downloads]: https://img.shields.io/npm/dt/vk-io-redis-storage?label=used%20by&style=flat-square
+[npm-url]: https://www.npmjs.com/package/vk-io-redis-storage
 
-[node]: https://img.shields.io/node/v/@vk-io-redis-storage.svg?style=flat-square
+[node]: https://img.shields.io/node/v/vk-io-redis-storage.svg?style=flat-square
 [node-url]: https://nodejs.org
 
 [build]: https://img.shields.io/travis/vk-io-redis-storage.svg?style=flat-square
