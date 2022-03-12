@@ -1,44 +1,63 @@
 import { ISessionStorage } from '@vk-io/session';
 import * as Redis from 'ioredis';
+import createDebug from 'debug';
 
-export type IRedisStorageOptions = Redis.RedisOptions;
-// | {
-//       host?: Redis.RedisOptions['host'];
-//       port?: Redis.RedisOptions['port'];
-//       password?: Redis.RedisOptions['password'];
-//       keyPrefix?: Redis.RedisOptions['keyPrefix'];
-//   };
+export type IRedisStorageOptions = {
+    redis?: Omit<Redis.RedisOptions, 'keyPrefix'> | Redis.Redis;
+    ttl?: number;
+    keyPrefix?: Redis.RedisOptions['keyPrefix'];
+};
+
+const debug = createDebug('vk-io:redis-store');
 
 export class RedisStorage implements ISessionStorage {
-    public readonly redis: Redis.Redis;
+    public readonly client: Redis.Redis;
+    public readonly ttl: number = 0;
 
-    constructor(redis_or_options?: IRedisStorageOptions | [Redis.Redis]) {
-        if (Array.isArray(redis_or_options)) {
-            if (!(redis_or_options[0] instanceof Redis)) {
-                throw new TypeError('An instance of the Redis class was expected');
-            }
-            [this.redis] = redis_or_options;
+    constructor(options: IRedisStorageOptions = {}) {
+        if (options.ttl) {
+            this.ttl = options.ttl;
+        }
+
+        if (options.redis instanceof Redis) {
+            this.client = options.redis;
         } else {
-            this.redis = new Redis({
-                ...redis_or_options,
-                keyPrefix: redis_or_options?.keyPrefix || 'vk-io:session:',
+            this.client = new Redis({
+                ...options.redis,
+                keyPrefix: options.keyPrefix || 'vk-io:session:',
             });
         }
     }
 
     public async get(key: string): Promise<object | undefined> {
-        return JSON.parse((await this.redis.get(key)) || '{}');
+        const value = JSON.parse((await this.client.get(key)) || '{}');
+        debug('session state', key, value);
+        return value;
     }
 
     public async set(key: string, value: object): Promise<boolean> {
-        return (await this.redis.set(key, JSON.stringify(value))) === 'OK';
+        const json = JSON.stringify(value);
+        if (!json || json === '{}') {
+            return await this.delete(key);
+        }
+
+        debug('save session', key, json);
+        const result = (await this.client.set(key, json)) === 'OK';
+        if (this.ttl) {
+            debug('set session ttl', this.ttl);
+            await this.client.expire(key, this.ttl);
+        }
+        return result;
     }
 
     public async delete(key: string): Promise<boolean> {
-        return (await this.redis.del(key)) === 1;
+        debug('delete session', key);
+        return (await this.client.del(key)) === 1;
     }
 
-    public async touch(_key: string): Promise<void> {
-        // await this.redis
+    public async touch(key: string): Promise<void> {
+        if (!this.ttl) return;
+        debug('touch session', key, this.ttl);
+        await this.client.expire(key, this.ttl);
     }
 }
