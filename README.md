@@ -27,22 +27,33 @@ const { SessionManager } = require('@vk-io/session');
 const { RedisStorage } = require('vk-io-redis-storage');
 
 const vk = new VK({
-    token: process.env.TOKEN
+    token: process.env.TOKEN,
 });
 
 function startBot({ updates }) {
-    // const storage = new RedisStorage([ioRedisClient]);
-    const storage = new RedisStorage({ host: '127.0.0.1', keyPrefix: 'vk-io:session:' });
+    const storage = new RedisStorage({
+        // redis: ioRedisClient,
+        redis: {
+            host: '127.0.0.1',
+        },
+        keyPrefix: 'vk-io:session:',
+        // ttl: 12 * 3600,
+    });
 
     const sessionManager = new SessionManager({
         storage,
         getStorageKey: (ctx) =>
-            ctx.userId ? `${ctx.userId}_${ctx.userId}` : `${ctx.peerId}_${ctx.senderId}`,
+            ctx.userId
+                ? `${ctx.userId}:${ctx.userId}`
+                : `${ctx.peerId}:${ctx.senderId}`,
     });
 
     updates.on('message', sessionManager.middleware);
 
-    updates.hear('/counter', (ctx) => {
+    updates.on('message_new', (ctx, next) => {
+        if (context.text !== '/counter') {
+            return next();
+        }
         if (ctx.isOutbox) return;
 
         const { session } = ctx;
